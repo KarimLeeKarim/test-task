@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import css from "./SignInPage.module.css";
-import client from "./client";
+import client from "../../helpers/client";
 
 export default function SignInPage() {
   const [domain, setDomain] = useState("");
@@ -18,8 +18,6 @@ export default function SignInPage() {
         login: { type: "device" }
       });
       client.setLoginSecret(res.secret);
-      console.log(res.secret);
-
       navigate("/groups");
     } catch (err) {
       setError(true);
