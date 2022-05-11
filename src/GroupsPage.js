@@ -7,6 +7,8 @@ export default function GroupsPage() {
   const [data, setData] = useState([]);
   const [modalActive, setModalActive] = useState(false);
 
+  console.log(data);
+
   useEffect(() => {
     client
       .get("/groups", { limit: 0, offset: 10 })
