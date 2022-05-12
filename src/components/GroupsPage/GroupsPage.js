@@ -82,7 +82,7 @@ export default function GroupsPage() {
           setAcceptToDeleteGroup={setAcceptToDeleteGroup}
         />
       ) : (
-        <NoData/>
+        <NoData />
       )}
 
       <ReactPaginate

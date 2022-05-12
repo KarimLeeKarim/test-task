@@ -34,11 +34,12 @@ export default function AddGroupModalWindow({
         time_restriction_enabled: false,
       },
     };
-
-    const postedGroup = await client.post("/groups", data);
-    if (postedGroup) {
-      fetchingData(offset, perPage, setData, setPageCount);
-      setInputValue("");
+    if (inputValue.trim() != "") {
+      const postedGroup = await client.post("/groups", data);
+      if (postedGroup) {
+        fetchingData(offset, perPage, setData, setPageCount);
+        setInputValue("");
+      }
     }
   };
   const handler = (e) => {
