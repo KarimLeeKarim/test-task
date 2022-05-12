@@ -1,11 +1,11 @@
 import { debounce } from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import ReactPaginate from "react-paginate";
 import client from "../../helpers/client";
 import { fetchingData } from "../../helpers/fetchData";
 import { FilterGroupList } from "../FilterGroupList/FilterGroupList";
 import GroupList from "../GroupList/GroupList";
-import { Modal } from "../ModalWindow/ModalWindow";
+import { ModalWindow } from "../ModalWindow/ModalWindow";
 
 export default function GroupsPage() {
   const [data, setData] = useState([]);
@@ -15,7 +15,10 @@ export default function GroupsPage() {
   const [modalWindowValue, setModalWindowValue] = useState("addGroup");
   const [acceptToDeleteGroup, setAcceptToDeleteGroup] = useState(false);
   const [deletedGroupID, setDeletedGroupID] = useState(null);
-  const perPage = 5;
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const perPage = 10;
+  let listToDisplay = data;
 
   useEffect(() => {
     fetchingData(offset, perPage, setData, setPageCount);
@@ -38,17 +41,38 @@ export default function GroupsPage() {
       }
     }
   };
-  console.log('acceptToDeleteGroup', acceptToDeleteGroup);
-  console.log('modalActive', modalActive);
+
+  const handleChange = (e) => {
+    setSearchTerm(e.target.value);
+    fetchingData(offset, perPage, setData, setPageCount);
+  };
+
+  if (searchTerm !== "") {
+    listToDisplay = data.filter((group) => {
+      return group.name.toLowerCase().includes(searchTerm);
+    });
+  }
+
+  const debouncedResults = useMemo(() => {
+    return debounce(handleChange, 1500);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      debouncedResults.cancel();
+    };
+  }, [searchTerm]);
+
   return (
     <div className="m-4">
       <h4 className="mb-3">Groups</h4>
       <FilterGroupList
         setModalActive={setModalActive}
         setModalWindowValue={setModalWindowValue}
+        debouncedResults={debouncedResults}
       />
       <GroupList
-        data={data}
+        data={listToDisplay}
         setDeletedGroupID={setDeletedGroupID}
         setModalActive={setModalActive}
         setModalWindowValue={setModalWindowValue}
@@ -74,7 +98,7 @@ export default function GroupsPage() {
         activeClassName="active"
         renderOnZeroPageCount={null}
       />
-      <Modal
+      <ModalWindow
         active={modalActive}
         setActive={setModalActive}
         perPage={perPage}

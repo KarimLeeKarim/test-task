@@ -1,6 +1,11 @@
 import React from "react";
 
-export const FilterGroupList = ({ setModalActive, setModalWindowValue }) => {
+export const FilterGroupList = ({
+  setModalActive,
+  setModalWindowValue,
+  debouncedResults
+}) => {
+
   return (
     <div className="d-flex justify-content-between mb-3">
       <div className="col-9">
@@ -9,13 +14,14 @@ export const FilterGroupList = ({ setModalActive, setModalWindowValue }) => {
           className="form-control"
           id="exampleFormControlInput1"
           placeholder="Search Group"
+          onChange={debouncedResults}
         />
       </div>
       <div>
         <button
           className="btn btn-secondary"
           onClick={() => {
-            setModalActive((prevState)=> !prevState);
+            setModalActive((prevState) => !prevState);
             setModalWindowValue("addGroup");
           }}
         >

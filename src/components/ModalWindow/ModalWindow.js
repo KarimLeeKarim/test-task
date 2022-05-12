@@ -3,7 +3,7 @@ import client from "../../helpers/client";
 import { fetchingData } from "../../helpers/fetchData";
 import modalCss from "./ModalWindow.module.css";
 
-export const Modal = ({
+export const ModalWindow = ({
   active,
   setActive,
   offset,
@@ -64,6 +64,7 @@ export const Modal = ({
               onChange={(e) => handler(e)}
             />
             <button
+             className="btn btn-outline-success"
               disabled={inputValue === "" ? true : false}
               onClick={() => {
                 setActive((prevState) => !prevState);
@@ -81,8 +82,9 @@ export const Modal = ({
           </div>
         ) : (
           <div>
-            <p>Are you sure by delete this group ? </p>
+            <p>Are you sure you want to delete this group?</p>
             <button
+              className="btn btn-outline-success"
               onClick={() => {
                 deleteHandler();
               }}
@@ -90,6 +92,7 @@ export const Modal = ({
               Yes
             </button>
             <button
+              className="btn btn-outline-danger"
               onClick={() => {
                 setActive((prevState) => !prevState);
                 setAcceptToDeleteGroup((prevState) => !prevState);
