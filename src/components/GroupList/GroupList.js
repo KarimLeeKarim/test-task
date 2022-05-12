@@ -1,14 +1,15 @@
 import React from "react";
-import { fetchingData } from "../../helpers/fetchData";
+import groupListCss from "./GroupList.module.css";
 
-export default function GroupList({ data, setData, setPageCount, dataOffset }) {
-  const deleteHandler = async (id) => {
-    await client.delete(`/groups/${id}`);
-    await fetchingData(dataOffset, setData, setPageCount);
-  };
-
+export default function GroupList({
+  data,
+  setDeletedGroupID,
+  setModalActive,
+  setModalWindowValue,
+  setAcceptToDeleteGroup,
+}) {
   return (
-    <ul className="list-group">
+    <ul className={groupListCss.list_group}>
       {data?.map((el) => (
         <li
           key={el.id}
@@ -17,7 +18,12 @@ export default function GroupList({ data, setData, setPageCount, dataOffset }) {
           <div>{el?.name}</div>
           <button
             className="btn btn-outline-danger"
-            onClick={() => deleteHandler(el.id)}
+            onClick={() => {
+              setModalWindowValue("deleteGroup");
+              setModalActive((prevState)=> !prevState);
+              setAcceptToDeleteGroup((prevState)=> !prevState);
+              setDeletedGroupID(el.id);
+            }}
           >
             <i className="bi bi-trash"></i>
           </button>

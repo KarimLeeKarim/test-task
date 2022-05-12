@@ -1,10 +1,13 @@
 import client from "./client";
 
-export const fetchingData = async (dataOffset, setData, setPageCount, perPage) => {
+export const fetchingData = async (offset, perPage, setData, setPageCount) => {
   try {
-    const endOffset = dataOffset + perPage;
-    const result = await client.get("/groups", { limit: 0, offset: 0 });
-    setData(result.data.slice(dataOffset, endOffset));
+    const endOffset = offset === 0 ? offset : offset * perPage;
+    const result = await client.get("/groups", {
+      limit: perPage,
+      offset: endOffset,
+    });
+    setData(result.data);
     setPageCount(Math.ceil(result.pagination.count / perPage));
   } catch (error) {
     console.log(error);

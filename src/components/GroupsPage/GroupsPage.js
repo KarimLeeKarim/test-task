@@ -1,6 +1,9 @@
+import { debounce } from "lodash";
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
+import client from "../../helpers/client";
 import { fetchingData } from "../../helpers/fetchData";
+import { FilterGroupList } from "../FilterGroupList/FilterGroupList";
 import GroupList from "../GroupList/GroupList";
 import { Modal } from "../ModalWindow/ModalWindow";
 
@@ -8,44 +11,48 @@ export default function GroupsPage() {
   const [data, setData] = useState([]);
   const [modalActive, setModalActive] = useState(false);
   const [pageCount, setPageCount] = useState(0);
-  const [dataOffset, setDataOffset] = useState(0);
-  const perPage = 10;
+  const [offset, setOffset] = useState(0);
+  const [modalWindowValue, setModalWindowValue] = useState("addGroup");
+  const [acceptToDeleteGroup, setAcceptToDeleteGroup] = useState(false);
+  const [deletedGroupID, setDeletedGroupID] = useState(null);
+  const perPage = 5;
 
   useEffect(() => {
-    fetchingData(dataOffset, setData, setPageCount, perPage);
-  }, [dataOffset, 5]);
+    fetchingData(offset, perPage, setData, setPageCount);
+  }, [offset, perPage]);
 
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * perPage) % data.length;
-    setDataOffset(newOffset);
+    const newOffset = event.selected;
+    setOffset(newOffset);
   };
 
+  const deleteHandler = async () => {
+    setAcceptToDeleteGroup(true);
+    setModalActive(true);
+    if (acceptToDeleteGroup) {
+      const deletedValue = await client.delete(`/groups/${deletedGroupID}`);
+      setAcceptToDeleteGroup(false);
+      if (deletedValue === "") {
+        await fetchingData(offset, perPage, setData, setPageCount);
+        setModalActive(false);
+      }
+    }
+  };
+  console.log('acceptToDeleteGroup', acceptToDeleteGroup);
+  console.log('modalActive', modalActive);
   return (
     <div className="m-4">
       <h4 className="mb-3">Groups</h4>
-      <div className="d-flex justify-content-between mb-3">
-        <div className="col-9">
-          <input
-            type="email"
-            className="form-control"
-            id="exampleFormControlInput1"
-            placeholder="Search Group"
-          />
-        </div>
-        <div>
-          <button
-            className="btn btn-secondary"
-            onClick={() => setModalActive(true)}
-          >
-            Add Group
-          </button>
-        </div>
-      </div>
+      <FilterGroupList
+        setModalActive={setModalActive}
+        setModalWindowValue={setModalWindowValue}
+      />
       <GroupList
         data={data}
-        setData={setData}
-        setPageCount={setPageCount}
-        dataOffset={dataOffset}
+        setDeletedGroupID={setDeletedGroupID}
+        setModalActive={setModalActive}
+        setModalWindowValue={setModalWindowValue}
+        setAcceptToDeleteGroup={setAcceptToDeleteGroup}
       />
       <ReactPaginate
         nextLabel="next >"
@@ -67,7 +74,17 @@ export default function GroupsPage() {
         activeClassName="active"
         renderOnZeroPageCount={null}
       />
-      <Modal active={modalActive} setActive={setModalActive} />
+      <Modal
+        active={modalActive}
+        setActive={setModalActive}
+        perPage={perPage}
+        setData={setData}
+        setPageCount={setPageCount}
+        offset={offset}
+        modalWindowValue={modalWindowValue}
+        setAcceptToDeleteGroup={setAcceptToDeleteGroup}
+        deleteHandler={deleteHandler}
+      />
     </div>
   );
 }
