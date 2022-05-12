@@ -30,24 +30,28 @@ export const DeleteConfirmGroupModalWindow = ({
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            If you are sure, please submit button Agree
+            If you are sure, please submit.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button
+            variant="contained"
+            color="success"
             onClick={() => {
               deleteHandler();
             }}
           >
-            Agree
+            Submit
           </Button>
           <Button
+            variant="contained"
+            color="error"
             onClick={() => {
               setModalActive((prev) => !prev);
               setModalWindowValue("deleteGroup");
             }}
           >
-            Disagree
+            Close
           </Button>
         </DialogActions>
       </Dialog>

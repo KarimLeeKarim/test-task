@@ -76,6 +76,8 @@ export default function AddGroupModalWindow({
             Submit
           </Button>
           <Button
+            variant="contained"
+            color="error"
             onClick={() => {
               setModalActive((prev) => !prev);
               setModalWindowValue("addGroup");

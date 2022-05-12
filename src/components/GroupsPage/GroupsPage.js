@@ -7,6 +7,7 @@ import AddGroupModalWindow from "../AddGroupModalWindow/AddGroupModalWindow";
 import { DeleteConfirmGroupModalWindow } from "../DeleteConfirmGroupModalWindow/DeleteConfirmGroupModalWindow";
 import { FilterGroupList } from "../FilterGroupList/FilterGroupList";
 import GroupList from "../GroupList/GroupList";
+import { NoData } from "../NoData/NoData";
 
 export default function GroupsPage() {
   const [data, setData] = useState([]);
@@ -50,7 +51,7 @@ export default function GroupsPage() {
 
   if (searchTerm !== "") {
     listToDisplay = data.filter((group) => {
-      return group.name.toLowerCase().includes(searchTerm);
+      return group.name.toLowerCase().includes(searchTerm.toLowerCase());
     });
   }
 
@@ -72,13 +73,18 @@ export default function GroupsPage() {
         setModalWindowValue={setModalWindowValue}
         debouncedResults={debouncedResults}
       />
-      <GroupList
-        data={listToDisplay}
-        setDeletedGroupID={setDeletedGroupID}
-        setModalActive={setModalActive}
-        setModalWindowValue={setModalWindowValue}
-        setAcceptToDeleteGroup={setAcceptToDeleteGroup}
-      />
+      {listToDisplay.length > 0 ? (
+        <GroupList
+          data={listToDisplay}
+          setDeletedGroupID={setDeletedGroupID}
+          setModalActive={setModalActive}
+          setModalWindowValue={setModalWindowValue}
+          setAcceptToDeleteGroup={setAcceptToDeleteGroup}
+        />
+      ) : (
+        <NoData/>
+      )}
+
       <ReactPaginate
         nextLabel="next >"
         onPageChange={handlePageClick}
