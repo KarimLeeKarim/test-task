@@ -3,9 +3,10 @@ import React, { useEffect, useState, useMemo } from "react";
 import ReactPaginate from "react-paginate";
 import client from "../../helpers/client";
 import { fetchingData } from "../../helpers/fetchData";
+import AddGroupModalWindow from "../AddGroupModalWindow/AddGroupModalWindow";
+import { DeleteConfirmGroupModalWindow } from "../DeleteConfirmGroupModalWindow/DeleteConfirmGroupModalWindow";
 import { FilterGroupList } from "../FilterGroupList/FilterGroupList";
 import GroupList from "../GroupList/GroupList";
-import { ModalWindow } from "../ModalWindow/ModalWindow";
 
 export default function GroupsPage() {
   const [data, setData] = useState([]);
@@ -98,17 +99,24 @@ export default function GroupsPage() {
         activeClassName="active"
         renderOnZeroPageCount={null}
       />
-      <ModalWindow
-        active={modalActive}
-        setActive={setModalActive}
-        perPage={perPage}
-        setData={setData}
-        setPageCount={setPageCount}
-        offset={offset}
-        modalWindowValue={modalWindowValue}
-        setAcceptToDeleteGroup={setAcceptToDeleteGroup}
-        deleteHandler={deleteHandler}
-      />
+      {modalWindowValue === "addGroup" ? (
+        <AddGroupModalWindow
+          modalActive={modalActive}
+          setModalActive={setModalActive}
+          setModalWindowValue={setModalWindowValue}
+          perPage={perPage}
+          setData={setData}
+          setPageCount={setPageCount}
+          offset={offset}
+        />
+      ) : (
+        <DeleteConfirmGroupModalWindow
+          modalActive={modalActive}
+          setModalActive={setModalActive}
+          setModalWindowValue={setModalWindowValue}
+          deleteHandler={deleteHandler}
+        />
+      )}
     </div>
   );
 }
